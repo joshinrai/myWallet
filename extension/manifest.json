@@ -1,0 +1,25 @@
+{
+  "name": "my_wallet",
+  "version": "1.0",
+  "description": "my_web3_wallet",
+  "manifest_version": 3,
+  "icons": {
+    "16": "/vite.svg",
+    "48": "/vite.svg",
+    "128": "/vite.svg"
+  },
+  "background": {
+    "service_worker": "scripts/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_icon": "/vite.svg",
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["static/index.js"]
+    }
+  ]
+}
