@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BrowserRouter, Routes, Link, Route } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
@@ -9,7 +10,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 
-import Home from './pages/Home';
+import Pages from './pages';
 
 import { RootGlobalStyle } from './APP';
 
@@ -47,17 +48,27 @@ function App() {
               </Typography>
             </ContainerWrapper>
 
-            <Button color="inherit">Login</Button>
+            <Link to="/">myWeb3APITest</Link>
+
+            <Button
+              color="inherit"
+              onClick={() => {
+                console.log(' login ...');
+              }}
+            >
+              Login
+            </Button>
           </Toolbar>
         </AppBar>
       </Box>
 
-      <Link to="/">index</Link>
-      <Link to="/home">Home</Link>
+      <Link to="/index">index</Link>
+      <Link to="/home">home</Link>
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<div>home</div>} />
+        <Route path="/home" element={<Pages.Home />} />
+        <Route path="/index" element={<div>index</div>} />
+        <Route path="/" element={<Pages.MyWeb3APITest />} />
       </Routes>
     </BrowserRouter>
   )

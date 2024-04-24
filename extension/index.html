@@ -4,13 +4,23 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>wallet</title>
     <script type="module" crossorigin src="/static/index.js"></script>
   </head>
   <body>
     <section class="wallet_title">
       <title>wallet</title>
     </section>
-    <div id="root"></div>
+    <div id="root_test"></div>
+    <script>
+      const hash = Math.ceil(Math.random() * 10000000);
+      const root = document.querySelector('#root_test');
+      if (root) {
+        const id = `root_${hash}`;
+        root.id = id;
+        window.rootId = id;
+      }
+      console.log('this is test ...', hash);
+    </script>
   </body>
 </html>

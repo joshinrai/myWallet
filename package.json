@@ -19,7 +19,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
-    "styled-components": "^6.1.8"
+    "styled-components": "^6.1.8",
+    "web3": "^4.8.0",
+    "web3-eth-abi": "^4.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
