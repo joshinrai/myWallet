@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-refresh/only-export-components */
+
+// https://docs.web3js.org/libdocs/ABI
+
 import { memo } from 'react';
 
 import Accordion from '@mui/material/Accordion';
@@ -19,7 +22,7 @@ const MyWeb3APITest = () => {
           aria-controls="panel1a-content"
           id="ConstructorAPI"
         >
-          <Typography>ABI</Typography>
+          <Typography>Prototype</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Components.ConstructorAPI />
@@ -62,6 +65,19 @@ const MyWeb3APITest = () => {
         </AccordionSummary>
         <AccordionDetails>
           <Components.Contract />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>ENS</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Components.ENS />
         </AccordionDetails>
       </Accordion>
     </>

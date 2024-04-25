@@ -14,17 +14,15 @@ import ListItemText from '@mui/material/ListItemText';
 import Web3 from 'web3';
 import mockData from '../../../mockData/web3APiData';
 
+let web3ABI: any;
+try {
+  const web3Instance = new Web3();
+  web3ABI = web3Instance.eth.abi;
+} catch (e) {
+  console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');
+}
 
 const ABI = () => {
-
-  let web3ABI: any;
-  try {
-    const web3Instance = new Web3();
-    web3ABI = web3Instance.eth.abi;
-  } catch (e) {
-    console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');
-  }
-
   return (
     <Box
       sx={{ width: '100%', height: 'auto', bgcolor: 'background.dark' }}

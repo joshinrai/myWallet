@@ -17,8 +17,8 @@ const RootGlobalStyle = createGlobalStyle`
     body {
       margin: 0;
       width: 100vw;
-      min-width: 320px;
-      min-height: 200px;
+      min-width: 500px;
+      min-height: 600px;
       height: 100vh;
     }
   }
