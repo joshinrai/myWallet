@@ -17,6 +17,19 @@ const MyWeb3APITest = () => {
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
+          id="ConstructorAPI"
+        >
+          <Typography>ABI</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Components.ConstructorAPI />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
           id="ABI"
         >
           <Typography>ABI</Typography>
