@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-refresh/only-export-components */
 import { memo, useReducer, useEffect } from 'react';
 
 import {
@@ -8,17 +6,18 @@ import {
   Dialog,
 } from '@mui/material';
 
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import CloseIcon from '@mui/icons-material/Close';
 
-import AccountComponents from './AccountComponents';
+import AccountComponents from '.';
 
 import {
   AccountGlobalStyle,
   AccountWrapper,
   DialogTitleWrapper,
-} from './styles';
+} from '../styles';
 
-import { Account } from './types';
+import { Account } from '../types';
 
 const Accounts: Account[] = [
   {
@@ -45,7 +44,7 @@ const reducer = (state: any, payload: any) => ({ ...state, ...payload });
 
 let timeOut: any;
 
-const HeaderAccount = () => {
+const MyAccount = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { showDialog, accountValue, publicKey, showAccountList } = state;
 
@@ -69,7 +68,7 @@ const HeaderAccount = () => {
             });
           }}
         >
-          <img src="/crypto.svg" alt="account" className="crypto_account" />
+          <AttachMoneyIcon />
           <span>{accountValue}</span>
           <div className="expand_more" />
         </div>
@@ -128,4 +127,4 @@ const HeaderAccount = () => {
   );
 };
 
-export default memo(HeaderAccount);
+export default memo(MyAccount);

@@ -13,15 +13,15 @@ import { signTransaction, Transaction } from 'web3-eth-accounts';
 
 import mockData from '../../../mockData/web3APiData';
 
-const Accounts = () => {
-  let accounts: any;
-  try {
-    const web3Instance = new Web3();
-    accounts = web3Instance?.eth?.accounts;
-  } catch (e) {
-    console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');
-  }
+let accounts: any;
+try {
+  const web3Instance = new Web3();
+  accounts = web3Instance?.eth?.accounts;
+} catch (e) {
+  console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');
+}
 
+const Accounts = () => {
   return (
     <Box
       sx={{ width: '100%', height: 'auto', bgcolor: 'background.dark' }}

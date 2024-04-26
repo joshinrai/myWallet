@@ -46,6 +46,11 @@ const AccountWrapper: any = styled.section`
       display: inline-flex;
       justify-content: center;
       align-items: center;
+      & > img.crypto_account {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+      }
       & > div.expand_more {
         width: 10px;
         height: 10px;
