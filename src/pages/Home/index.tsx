@@ -1,9 +1,14 @@
 import { memo, useState } from 'react';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { increment } from '../../store/accountsSlice';
+
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+
+import Web3 from 'web3';
 
 import { HomeWrapper } from './styles';
 
@@ -25,7 +30,7 @@ const actionList = [
   },
   {
     icon: '/crossChain.svg',
-    name: '跨链桥',
+    name: '测试',
     key: 'crossBridge'
   },
   {
@@ -62,8 +67,20 @@ const TabPanel = (props: any) => {
   );
 }
 
+try {
+  const providerUrl = import.meta.env.VITE_PROJECT_SEPOLIA_PROVIDER;
+  const web3Instance = new Web3(`${providerUrl}`);
+  console.log('%c 7777777777 web3Instance is:', 'color: #ff0;', web3Instance);
+} catch (e) {
+  console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');
+}
+
 const Home = () => {
   const [value, setValue] = useState(0);
+  const count = useSelector((reduxState: any) => reduxState.account.value);
+  const accountList = useSelector((reduxState: any) => reduxState.account.accountList);
+  const reduxDispatch = useDispatch();
+  console.log('%c 777777777 count is:', 'color: #f00;', count, accountList);
 
   const handleChange = (_event: any, newValue: any) => {
     setValue(newValue);
@@ -79,7 +96,14 @@ const Home = () => {
       <div className="action_wrapper">
         {
           actionList.map((item: any) => (
-            <section key={item.key} className="icon_wrapper">
+            <section
+              key={item.key}
+              className="icon_wrapper"
+              onClick={() => {
+                reduxDispatch(increment());
+                console.log('%c 88888 test redux ...', 'color: #ff0;', item);
+              }}
+            >
               <img src={item.icon} alt={item.name} className="icon_image" />
               <span className="icon_name">{item.name}</span>
             </section>

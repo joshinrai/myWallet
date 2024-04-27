@@ -16,7 +16,8 @@ import mockData from '../../../mockData/web3APiData';
 
 let web3ABI: any;
 try {
-  const web3Instance = new Web3();
+  const providerUrl = import.meta.env.VITE_PROJECT_SEPOLIA_PROVIDER;
+  const web3Instance = new Web3(`${providerUrl}`);
   web3ABI = web3Instance.eth.abi;
 } catch (e) {
   console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');

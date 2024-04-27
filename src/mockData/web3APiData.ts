@@ -212,6 +212,47 @@ const encryptKdfData: any = [
   }
 ];
 
+const walletDecryptData = [
+  {
+    version: 3,
+    id: '83191a81-aaca-451f-b63d-0c5f3b849289',
+    address: '06f702337909c06c82b09b7a22f0a2f0855d1f68',
+    crypto: {
+      ciphertext: '7d34deae112841fba86e3e6cf08f5398dda323a8e4d29332621534e2c4069e8d',
+      cipherparams: {
+        iv: '497f4d26997a84d570778eae874b2333' },
+        cipher: 'aes-128-ctr',
+        kdf: 'scrypt',
+        kdfparams: {
+          dklen: 32,
+          salt: '208dd732a27aa4803bb760228dff18515d5313fd085bbce60594a3919ae2d88d',
+          n: 262144,
+          r: 8,
+          p: 1
+        },
+      mac: '0062a853de302513c57bfe3108ab493733034bf3cb313326f42cf26ea2619cf9' }
+    },
+    {
+      version: 3,
+      id: '7d6b91fa-3611-407b-b16b-396efb28f97e',
+      address: 'b5d89661b59a9af0b34f58d19138baa2de48baaf',
+      crypto: {
+        ciphertext: 'cb9712d1982ff89f571fa5dbef447f14b7e5f142232bd2a913aac833730eeb43',
+        cipherparams: { iv: '8cccb91cb84e435437f7282ec2ffd2db' },
+        cipher: 'aes-128-ctr',
+        kdf: 'scrypt',
+        kdfparams: {
+          dklen: 32,
+          salt: '08ba6736363c5586434cd5b895e6fe41ea7db4785bd9b901dedce77a1514e8b8',
+          n: 262144,
+          r: 8,
+          p: 1
+        },
+        mac: 'd2eb068b37e2df55f56fa97a2bf4f55e072bef0dd703bfd917717d9dc54510f0'
+      }
+    }
+  ];
+
 export default {
   decodeLogData,
   decodeParameterData,
@@ -228,4 +269,5 @@ export default {
   decryptData,
   encryptData,
   encryptKdfData,
+  walletDecryptData,
 };

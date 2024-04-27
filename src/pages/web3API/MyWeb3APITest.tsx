@@ -80,6 +80,84 @@ const MyWeb3APITest = () => {
           <Components.ENS />
         </AccordionDetails>
       </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>Iban</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Components.Iban />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>Net</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Components.Net />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>Personal</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Components.Personal />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>Utils</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Components.Utils />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>Wallet</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Components.Wallet />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>Web3Eth</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Components.Web3Eth />
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 };

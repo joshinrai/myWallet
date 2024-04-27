@@ -17,7 +17,8 @@ const Contract = () => {
 
   const initContract = async () => {
     try {
-      const web3Instance = new Web3(); // 'https://127.0.0.1:4545'
+      const providerUrl = import.meta.env.VITE_PROJECT_SEPOLIA_PROVIDER;
+      const web3Instance = new Web3(`${providerUrl}`);
       // const abi = [...] as const; // my contract ABI
       contract = new web3Instance.eth.Contract([], '0xdAC17F958D2ee523a2206206994597C13D831ec7');
       console.log('%c 9999 contract.methods.balanceOf is:', 'color: #ff0;', contract.methods);

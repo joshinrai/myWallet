@@ -13,30 +13,38 @@ import {
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 
+import { useDispatch } from 'react-redux';
+
 import { blue } from '@mui/material/colors';
+
+import { changeCurrentAccount } from '../../store/accountsSlice';
 
 import { SelectAccountWrapper } from '../styles';
 
 const AccountList = (props: any) => {
   const { Accounts, outerDispatch } = props;
 
+  const reduxDispatch = useDispatch();
+
   return (
     <List sx={{ pt: 0 }}>
       {
         Accounts.map((account: any) => {
-          const publicKey = account.publicKey;
-          const [front, end] = [publicKey.slice(0, 7), publicKey.slice(-7)];
+          const address = account.address;
+          const [front, end] = [address.slice(0, 7), address.slice(-7)];
           return (
             <ListItem
               button
               onClick={() => {
-                const { title, publicKey } = account;
+                reduxDispatch(changeCurrentAccount(account));
+                console.log('%c 9999999 account is:', 'color: #0f0;', account);
+                const { title, address } = account;
                 outerDispatch({
                   accountValue: title,
-                  publicKey
+                  address
                 });
               }}
-              key={account.publicKey}
+              key={account.address}
             >
               <ListItemAvatar>
                 <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
@@ -53,7 +61,7 @@ const AccountList = (props: any) => {
                     <span className="front_span">{front}</span>
                     <span className="ellipses_span">...</span>
                     <span className="end_span">{end}</span>
-                    {/* <span className="public_key" title={publicKey}>{publicKey}</span> */}
+                    {/* <span className="public_key" title={address}>{address}</span> */}
                   </section>
                   <span>{account.balance}</span>
                 </div>

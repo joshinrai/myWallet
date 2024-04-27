@@ -12,7 +12,8 @@ const ConstructorAPI = () => {
   let ethInstance: any;
 
   try {
-    const web3Instance = new Web3('https://mainnet.infura.io/v3/my_infura_key');
+    const providerUrl = import.meta.env.VITE_PROJECT_SEPOLIA_PROVIDER;
+    const web3Instance = new Web3(`${providerUrl}`);
     ethInstance = web3Instance.eth;
   } catch (e) {
     console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');

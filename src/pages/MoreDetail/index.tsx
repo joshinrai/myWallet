@@ -2,6 +2,8 @@
 
 import { memo, useReducer } from 'react';
 
+import { useNavigate } from 'react-router-dom';
+
 import {
   Dialog,
   List,
@@ -32,6 +34,8 @@ const MoreDetail = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { showDialog } = state;
 
+  const navigate = useNavigate();
+
   return (
     <MoreDetailWrapper>
       <MoreIcon
@@ -60,7 +64,9 @@ const MoreDetail = () => {
                 <ListItem
                   button
                   onClick={() => {
-                    console.log('', '');
+                    dispatch({ showDialog: false });
+                    console.log('%c 777777 action is:', '#0f0;', action);
+                    navigate('/login');
                   }}
                   key={action.key}
                 >

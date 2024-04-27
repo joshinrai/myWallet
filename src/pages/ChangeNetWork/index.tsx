@@ -14,7 +14,7 @@ import { ChangeNetWorkWrapper, IconWrapper, DialogTitleWrapper } from './styles'
 const netWorkList = [
   {
     icon: '',
-    name: 'Ethereum Mainnet',
+    name: 'Sepolia',
     key: '1',
   },
   {

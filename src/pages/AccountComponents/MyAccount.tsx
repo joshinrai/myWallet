@@ -21,13 +21,13 @@ import { Account } from '../types';
 
 const Accounts: Account[] = [
   {
-    title: 'Account1',
+    title: 'Sepolia',
     publicKey: '0x9896fA3a4B4979fbE8a153193260421378F562Ca',
     currency: 'USD',
     balance: '0ETH',
   },
   {
-    title: 'Account2',
+    title: 'Linea Sepolia',
     publicKey: '0x9799C859D04F83970AE30FAf55dA7B39F649beaD',
     currency: 'USD',
     balance: '1ETH',
