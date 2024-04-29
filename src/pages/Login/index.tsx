@@ -1,4 +1,5 @@
 import { memo, useRef, useReducer } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import TextField from '@mui/material/TextField';
@@ -10,6 +11,7 @@ import { purple } from '@mui/material/colors';
 import Web3 from 'web3';
 import throttle from 'lodash/throttle';
 
+import { setPassword } from '../../store/accountsSlice';
 import { LoginWrapper } from './styles';
 
 let walletInstance: any;
@@ -48,6 +50,7 @@ const Login = () => {
   const { fieldError, helperText } = state;
 
   const navigate = useNavigate();
+  const reduxDispatch = useDispatch();
 
   return (
     <LoginWrapper>
@@ -80,13 +83,14 @@ const Login = () => {
         <ColorButton
           variant="contained"
           onClick={async () => {
-            // const walletIns = await walletInstance.create(1);
-            // const saveBool = await walletInstance.save('test#!$2', 'myWallet');
             try {
               const inputValue = inputRef?.current?.value;
-              const loadWallet = await walletInstance.load(inputValue); // test#!$2
-              console.log('%c 8888888 登录 成功 ...', 'color: #0f0;', inputValue, loadWallet);
-              navigate('/');
+              const sha3Value = Web3.utils.sha3Raw(inputValue);
+              const loadWallet = await walletInstance.load(sha3Value, 'myWallet');
+              if (loadWallet.length) {
+                reduxDispatch(setPassword(sha3Value as any));
+                navigate('/');
+              }
             } catch (e: any) {
               console.log('error is:', 'color: #f00;', e);
               dispatch({

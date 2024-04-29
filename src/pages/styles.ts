@@ -5,6 +5,12 @@ const AccountGlobalStyle = createGlobalStyle`
   fieldset.MuiOutlinedInput-notchedOutline {
     border: none;
   }
+  div.MuiDialog-container > div.MuiPaper-root > h2.css-bdhsul-MuiTypography-root-MuiDialogTitle-root {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+  }
 `;
 
 const CommonAddressCss = css`
@@ -78,6 +84,22 @@ const SelectAccountWrapper = styled.div`
     }
     &.address {
       ${CommonAddressCss};
+      & > section.account_balance {
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        & > span.account_count {
+          display: inline-block;
+          max-width: 80px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-weight: 600;
+        }
+        & > span.balance_unit {
+          margin-left: 5px;
+        }
+      }
     }
   }
 `;

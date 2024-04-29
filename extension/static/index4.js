@@ -1,6 +1,6 @@
-import{f as o,r,G as a,j as e}from"./index.js";import{D as c}from"./Dialog.js";import{a as p}from"./List.js";import{L as m}from"./ListItem.js";import"./ButtonBase.js";import"./Modal.js";import"./useSlotProps.js";const x=o.section`
+import{f as o,r,D as l,w as p,j as s,K as x}from"./index.js";import{D as h}from"./Dialog.js";import{f as d}from"./List.js";import{L as m}from"./ListItem.js";import"./Modal.js";const g=o.section`
 
-`,h=o.div`
+`,u=o.div`
   width: 24px;
   height: 24px;
   border-radius: 10px;
@@ -8,7 +8,7 @@ import{f as o,r,G as a,j as e}from"./index.js";import{D as c}from"./Dialog.js";i
   line-height: 24px;
   writing-mode: vertical-lr;
   cursor: pointer;
-`,d=o.div`
+`,f=o.div`
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -17,4 +17,4 @@ import{f as o,r,G as a,j as e}from"./index.js";import{D as c}from"./Dialog.js";i
     height: 20px;
     margin-right: 10px;
   }
-`,g=[{icon:"/wireless.svg",title:"已连接的网站",key:"link"},{icon:"/lock.svg",title:"锁定MetaMask",key:"lock"}],u={showDialog:!1},f=(s,i)=>({...s,...i}),j=()=>{const[s,i]=r.useReducer(f,u),{showDialog:n}=s,l=a();return e.jsxs(x,{children:[e.jsx(h,{onClick:()=>{i({showDialog:!0})},children:"..."}),e.jsx(c,{onClose:()=>{i({showDialog:!1})},open:n,sx:{minWidth:{xs:300,md:300}},children:e.jsx(p,{sx:{pt:0},children:g.map(t=>e.jsx(m,{button:!0,onClick:()=>{i({showDialog:!1}),console.log("%c 777777 action is:","#0f0;",t),l("/login")},children:e.jsxs(d,{children:[e.jsx("img",{src:t.icon,alt:t.title,className:"more_icon"}),e.jsx("span",{children:t.title})]})},t.key))})})]})},C=r.memo(j);export{C as default};
+`,D=[{icon:"/lock.svg",title:"锁定MetaMask",key:"lock"}],j={showDialog:!1},w=(i,t)=>({...i,...t}),k=()=>{const[i,t]=r.useReducer(w,j),{showDialog:n}=i,a=l(),c=p();return s.jsxs(g,{children:[s.jsx(u,{onClick:()=>{t({showDialog:!0})},children:"..."}),s.jsx(h,{onClose:()=>{t({showDialog:!1})},open:n,sx:{minWidth:{xs:300,md:300}},children:s.jsx(d,{sx:{pt:0},children:D.map(e=>s.jsx(m,{button:!0,onClick:()=>{t({showDialog:!1}),console.log("%c 777777 action is:","#0f0;",e),e.key==="lock"&&(c(x("")),a("/login"))},children:s.jsxs(f,{children:[s.jsx("img",{src:e.icon,alt:e.title,className:"more_icon"}),s.jsx("span",{children:e.title})]})},e.key))})})]})},W=r.memo(k);export{W as default};

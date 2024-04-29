@@ -162,12 +162,10 @@ const CreateNewWallet = (props: any) => {
                 returnBool = true;
               }
               if (returnBool || [pswError, cfmError].some(Boolean)) return;
-              const res: any = await walletInstance.create(1);
-              const saveBool = await walletInstance.save(confirmText, 'myWallet');
-              const loadWallet = await walletInstance.load(confirmText);
-              console.log('%c 8888888 confirmText is:', 'color: #ff0;', confirmText);
+              await walletInstance.create(1);
+              await walletInstance.save(confirmText, 'myWallet');
+              await walletInstance.load(confirmText, 'myWallet');
               reduxDispatch(setPassword(confirmText as any));
-              console.log('%c 9999999 确定 ...', 'color: #0f0;', res, saveBool, loadWallet, loadWallet.length);
               outerDispatch({
                 showAddDialog: false,
               });

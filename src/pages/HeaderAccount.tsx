@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-refresh/only-export-components */
 import { memo, useReducer, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Typography,
@@ -14,6 +15,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import Web3 from 'web3';
 import cloneDeep from 'lodash/cloneDeep';
 
+import { setAccountLenght, changeCurrentAccount } from '../store/accountsSlice';
+
 import AccountComponents from './AccountComponents';
 
 import {
@@ -22,9 +25,10 @@ import {
   DialogTitleWrapper,
 } from './styles';
 
+const nullSet = new Set([null, void 0, '']);
+
 const initialState = {
   showDialog: false,
-  currentPublicKey: '',
   accountList: [],
   showAccountList: true,
 };
@@ -36,29 +40,55 @@ const HeaderAccount = (props: any) => {
   const { web3Instance, walletInstance, accounts } = props;
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { showDialog, currentPublicKey, accountList, showAccountList } = state;
+  const {
+    showDialog,
+    accountList,
+    showAccountList,
+  } = state;
 
-  const currentAccount = useSelector((reduxState: any) => reduxState.account.currentAccount);
+  const reduxDispatch = useDispatch();
+  const accountStore = useSelector((reduxState: any) => reduxState.account);
+  const navigate = useNavigate();
 
-  const accountValue = currentAccount?.title;
+  const {
+    currentAccount,
+    password,
+    accountLength,
+  } = accountStore;
 
   const loadWalletAddress = async () => {
-    const loadWallet = await walletInstance.load(Web3.utils.sha3Raw('test'), 'myWallet');
-    const walletList = cloneDeep(loadWallet);
-    const walletLen = walletList.length;
-    for (let i = 0; i < walletLen; i += 1) {
-      const walletItem = walletList[i];
-      const balance: any = await web3Instance.eth.getBalance(walletItem.address);
-      const toEth = Web3.utils.toWei(balance, "ether");
-      walletItem.balance = `${toEth}eth`;
-      console.log('% 66666666 balance is:', '#color: #f00;', balance, toEth);
+    if (password) {
+      const loadWallet = await walletInstance.load(password, 'myWallet');
+      const firstAccountAddress = loadWallet?.[0]?.address;
+      reduxDispatch(changeCurrentAccount(firstAccountAddress));
+      const walletLen = loadWallet.length;
+      const set = new Set();
+      const walletList: any = [];
+      for (let i = 0; i < walletLen; i += 1) {
+        let walletItem: any = cloneDeep(loadWallet[i]);
+        const address = walletItem.address;
+        if (set.has(address)) continue;
+        set.add(address);
+        const balance: any = await web3Instance.eth.getBalance(address);
+        const ethBalance: string = Web3.utils.fromWei(balance, 'ether');
+        walletItem.balance = `${(+ethBalance).toFixed(4)}`;
+        walletList.push(walletItem);
+      }
+      dispatch({
+        accountList: walletList,
+      });
+      reduxDispatch(setAccountLenght(walletLen));
     }
-    dispatch({
-      currentPublicKey: walletList?.[0]?.address,
-      accountList: walletList,
-    });
-    console.log('%c 1008611 header account loadWallet is:', 'color: #0f0;', loadWallet, loadWallet.length);
   };
+
+  useEffect(() => {
+    const myWalletStorage = localStorage.myWallet;
+    if (nullSet.has(myWalletStorage)) {
+      navigate('/welcom');
+    } else if (nullSet.has(password)) {
+      navigate('/login');
+    }
+  }, [password]);
 
   useEffect(() => {
     loadWalletAddress();
@@ -66,7 +96,7 @@ const HeaderAccount = (props: any) => {
       clearTimeout(timeOut);
       timeOut = void 0;
     }
-  }, []);
+  }, [password, accountLength]);
 
   return (
     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -82,15 +112,15 @@ const HeaderAccount = (props: any) => {
           }}
         >
           <img src="/crypto.svg" alt="account" className="crypto_account" />
-          <span>{accountValue}</span>
+          <span>{'Account1'}</span>
           <div className="expand_more" />
         </div>
 
         <div className="bottom_wrapper">
           <section className="text_wrapper">
-            <span className="front_span">{currentPublicKey.slice(0, 7)}</span>
+            <span className="front_span">{currentAccount?.slice?.(0, 7)}</span>
             <span className="ellipses_span">...</span>
-            <span className="end_span">{currentPublicKey.slice(-7)}</span>
+            <span className="end_span">{currentAccount?.slice?.(-7)}</span>
           </section>
         </div>
       </AccountWrapper>
@@ -137,6 +167,7 @@ const HeaderAccount = (props: any) => {
           ) : (
             <AccountComponents.AddNewAccount
               walletInstance={walletInstance}
+              outerDispatch={dispatch}
               accounts={accounts}
             />
           )

@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { memo, useReducer, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { styled } from '@mui/material/styles';
 import {
@@ -20,6 +20,9 @@ import { purple } from '@mui/material/colors';
 import AddIcon from '@mui/icons-material/Add';
 
 import throttle from 'lodash/throttle';
+
+import { addAccount } from '../../store/accountsSlice';
+
 import { ImportPrivateKeyWrapper } from './styles';
 
 const ColorButton = styled(Button)(({ theme }) => ({
@@ -49,7 +52,7 @@ const Alert = React.forwardRef(function Alert(props: any, ref: any) {
 });
 
 const AddNewAccount = (props: any) => {
-  const { walletInstance, accounts } = props;
+  const { walletInstance, outerDispatch, accounts } = props;
 
   const inputRef: any = useRef(null);
 
@@ -57,6 +60,7 @@ const AddNewAccount = (props: any) => {
   const { open, accountMessage, status, showDialog, fieldError, helperText } = state;
 
   const password = useSelector((reduxState: any) => reduxState.account.password);
+  const reduxDispatch = useDispatch();
 
   const judgePrivateKey = async (value: any) => {
     dispatch({
@@ -85,17 +89,18 @@ const AddNewAccount = (props: any) => {
           button
           onClick={async () => {
             try {
-              const res: any = await walletInstance.create(1);
-              const saveBool = await walletInstance.save(password, 'myWallet');
-              const loadWallet = await walletInstance.load(password);
+              await walletInstance.create(1);
+              await walletInstance.save(password, 'myWallet');
               dispatch({
                 open: true,
                 accountMessage: 'account创建成功!',
                 status: 'success',
               });
-              console.log('%c 2222222 新账户创建成功 ...', 'color: #ff0;', res, saveBool, loadWallet);
+              outerDispatch({
+                showAccountList: true,
+              });
+              reduxDispatch(addAccount());
             } catch (e: any) {
-              console.log('%c 888888888 新账户创建失败...', 'color: #f00;');
               dispatch({
                 open: true,
                 accountMessage: 'account创建失败!',
@@ -119,7 +124,6 @@ const AddNewAccount = (props: any) => {
             dispatch({
               showDialog: true,
             });
-            console.log('%c 2222222 导入账户 ...', 'color: #ff0;');
           }}
         >
           <ListItemAvatar>
@@ -169,13 +173,18 @@ const AddNewAccount = (props: any) => {
               try {
                 const value = inputRef?.current?.value;
                 await judgePrivateKey(value);
-                accounts.privateKeyToAccount(`0x${value}`);
+                await walletInstance.add(`0x${value}`);
+                // await walletInstance.save(password, 'myWallet');
                 dispatch({
                   showDialog: false,
                   open: true,
                   accountMessage: '加载钱包成功!',
                   status: 'success',
                 });
+                outerDispatch({
+                  showAccountList: true,
+                });
+                reduxDispatch(addAccount());
               } catch (e: any) {
                 console.log('%c 钱包加载失败 e is:', 'color: #f00;', e);
                 dispatch({

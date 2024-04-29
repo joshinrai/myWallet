@@ -1,7 +1,7 @@
 // setLocked(锁定)
 
 import { memo, useReducer } from 'react';
-
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -10,14 +10,15 @@ import {
   ListItem,
 } from '@mui/material';
 
+import { setPassword } from '../../store/accountsSlice';
 import { MoreDetailWrapper, MoreIcon, ActionLineWrapper } from './styles';
 
 const MoreActions = [
-  {
+  /* {
     icon: '/wireless.svg',
     title: '已连接的网站',
     key: 'link',
-  },
+  }, */
   {
     icon: '/lock.svg',
     title: '锁定MetaMask',
@@ -35,6 +36,7 @@ const MoreDetail = () => {
   const { showDialog } = state;
 
   const navigate = useNavigate();
+  const reduxDispatch = useDispatch();
 
   return (
     <MoreDetailWrapper>
@@ -66,7 +68,10 @@ const MoreDetail = () => {
                   onClick={() => {
                     dispatch({ showDialog: false });
                     console.log('%c 777777 action is:', '#0f0;', action);
-                    navigate('/login');
+                    if (action.key === 'lock') {
+                      reduxDispatch(setPassword('' as any));
+                      navigate('/login');
+                    }
                   }}
                   key={action.key}
                 >

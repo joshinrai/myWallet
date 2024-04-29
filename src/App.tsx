@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Suspense } from 'react';
-import { BrowserRouter, Routes, Link, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
+
+import {
+  AppBar,
+  Box,
+  Toolbar,
+} from '@mui/material';
 
 import Web3 from 'web3';
 
@@ -59,7 +62,7 @@ function App() {
               />
             </ContainerWrapper>
 
-            <Link to="/web3Api">web3API</Link>
+            {/* <Link to="/web3Api">web3API</Link> */}
 
             <Pages.MoreDetail />
           </Toolbar>
