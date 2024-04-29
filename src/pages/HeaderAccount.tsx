@@ -12,6 +12,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 
 import Web3 from 'web3';
+import cloneDeep from 'lodash/cloneDeep';
 
 import AccountComponents from './AccountComponents';
 
@@ -23,7 +24,8 @@ import {
 
 const initialState = {
   showDialog: false,
-  publicKey: '0x9896fA3a4B4979fbE8a153193260421378F562Ca',
+  currentPublicKey: '',
+  accountList: [],
   showAccountList: true,
 };
 const reducer = (state: any, payload: any) => ({ ...state, ...payload });
@@ -31,20 +33,31 @@ const reducer = (state: any, payload: any) => ({ ...state, ...payload });
 let timeOut: any;
 
 const HeaderAccount = (props: any) => {
-  const { walletInstance } = props;
+  const { web3Instance, walletInstance, accounts } = props;
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { showDialog, showAccountList } = state;
+  const { showDialog, currentPublicKey, accountList, showAccountList } = state;
 
   const currentAccount = useSelector((reduxState: any) => reduxState.account.currentAccount);
-  const accountList = useSelector((reduxState: any) => reduxState.account.accountList);
 
   const accountValue = currentAccount?.title;
-  const publicKey = currentAccount?.address;
 
   const loadWalletAddress = async () => {
-    const loadWallet = await walletInstance.load(Web3.utils.sha3Raw('test'));
-    console.log('%c 888888 loadWallet is:', 'color: #0f0;', walletInstance, loadWallet, loadWallet.length);
+    const loadWallet = await walletInstance.load(Web3.utils.sha3Raw('test'), 'myWallet');
+    const walletList = cloneDeep(loadWallet);
+    const walletLen = walletList.length;
+    for (let i = 0; i < walletLen; i += 1) {
+      const walletItem = walletList[i];
+      const balance: any = await web3Instance.eth.getBalance(walletItem.address);
+      const toEth = Web3.utils.toWei(balance, "ether");
+      walletItem.balance = `${toEth}eth`;
+      console.log('% 66666666 balance is:', '#color: #f00;', balance, toEth);
+    }
+    dispatch({
+      currentPublicKey: walletList?.[0]?.address,
+      accountList: walletList,
+    });
+    console.log('%c 1008611 header account loadWallet is:', 'color: #0f0;', loadWallet, loadWallet.length);
   };
 
   useEffect(() => {
@@ -75,9 +88,9 @@ const HeaderAccount = (props: any) => {
 
         <div className="bottom_wrapper">
           <section className="text_wrapper">
-            <span className="front_span">{publicKey.slice(0, 7)}</span>
+            <span className="front_span">{currentPublicKey.slice(0, 7)}</span>
             <span className="ellipses_span">...</span>
-            <span className="end_span">{publicKey.slice(-7)}</span>
+            <span className="end_span">{currentPublicKey.slice(-7)}</span>
           </section>
         </div>
       </AccountWrapper>
@@ -116,9 +129,16 @@ const HeaderAccount = (props: any) => {
         </DialogTitle>
         {
           showAccountList ? (
-            <AccountComponents.AccountList Accounts={accountList} outerDispatch={dispatch} />
+            <AccountComponents.AccountList
+              Accounts={accountList}
+              outerDispatch={dispatch}
+              walletInstance={walletInstance}
+            />
           ) : (
-            <AccountComponents.AddNewAccount />
+            <AccountComponents.AddNewAccount
+              walletInstance={walletInstance}
+              accounts={accounts}
+            />
           )
         }
       </Dialog>

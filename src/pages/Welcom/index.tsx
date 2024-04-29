@@ -113,7 +113,7 @@ const Welcom = (props: any) => {
             marginTop: '20px',
           }}
           onClick={async () => {
-            const loadWallet = await walletInstance.load(Web3.utils.sha3Raw('test'));
+            const loadWallet = await walletInstance.load(Web3.utils.sha3Raw('test'), 'myWallet');
             console.log('%c 8888888 测试加载钱包 ...', 'color: #ff0;', loadWallet, loadWallet.length);
           }}
         >

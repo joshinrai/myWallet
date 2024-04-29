@@ -27,9 +27,14 @@ const AccountList = (props: any) => {
   const reduxDispatch = useDispatch();
 
   return (
-    <List sx={{ pt: 0 }}>
+    <List
+      sx={{
+        pt: 0,
+        height: '400px',
+      }}
+    >
       {
-        Accounts.map((account: any) => {
+        Accounts.map((account: any, index: number) => {
           const address = account.address;
           const [front, end] = [address.slice(0, 7), address.slice(-7)];
           return (
@@ -53,7 +58,7 @@ const AccountList = (props: any) => {
               </ListItemAvatar>
               <SelectAccountWrapper>
                 <div className="account">
-                  <span>{account.title}</span>
+                  <span>{account?.title ?? `Account${index + 1}`}</span>
                   <span>{account.currency}</span>
                 </div>
                 <div className="address">
@@ -61,7 +66,6 @@ const AccountList = (props: any) => {
                     <span className="front_span">{front}</span>
                     <span className="ellipses_span">...</span>
                     <span className="end_span">{end}</span>
-                    {/* <span className="public_key" title={address}>{address}</span> */}
                   </section>
                   <span>{account.balance}</span>
                 </div>
@@ -86,7 +90,7 @@ const AccountList = (props: any) => {
             <AddIcon />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary="Add account or hardware wallet" />
+        <ListItemText primary="Add account" />
       </ListItem>
     </List>
   );

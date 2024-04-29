@@ -4,6 +4,7 @@ export const accountSlice = createSlice({
   name: 'account',
   initialState: {
     value: 'test',
+    password: '',
     currentAccount: {
       title: 'sepoliaAccount',
       chainName: 'Sepolia',
@@ -39,7 +40,7 @@ export const accountSlice = createSlice({
       state.currentAccount = action.payload;
     },
     increment: (state: any) => {
-      console.log('%c 7777777777 state is:', 'color: #f00;', state);
+      // console.log('%c 7777777777 state is:', 'color: #f00;', state);
       state.value = `test_${Math.floor(Math.random() * 1000)}`;
     },
     decrement: (state: any) => {
@@ -47,6 +48,10 @@ export const accountSlice = createSlice({
     },
     incrementByAmount: (state: any, action: any) => {
       state.value += action.payload;
+    },
+    setPassword: (state: any, action: any) => {
+      console.log('%c 1008611 action is:', 'color: #0f0;', action);
+      state.password = action.payload;
     },
   },
 });
@@ -57,6 +62,7 @@ export const {
   increment,
   decrement,
   incrementByAmount,
+  setPassword,
 } = accountSlice.actions;
 
 export default accountSlice.reducer;

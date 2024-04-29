@@ -1,7 +1,6 @@
 import { memo, useState } from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { increment } from '../../store/accountsSlice';
+import { useSelector } from 'react-redux';
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -75,16 +74,17 @@ try {
   console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');
 }
 
-const Home = () => {
+const Home = (props: any) => {
+  const { walletInstance } = props;
+  console.log('%c 8888888888 props is:', 'color: #0f0;', props);
+
   const [value, setValue] = useState(0);
   const count = useSelector((reduxState: any) => reduxState.account.value);
   const accountList = useSelector((reduxState: any) => reduxState.account.accountList);
-  const reduxDispatch = useDispatch();
+  // const reduxDispatch = useDispatch();
   console.log('%c 777777777 count is:', 'color: #f00;', count, accountList);
 
-  const handleChange = (_event: any, newValue: any) => {
-    setValue(newValue);
-  };
+  const handleChange = (_event: any, newValue: any) => setValue(newValue);
 
   return (
     <HomeWrapper>
@@ -99,9 +99,10 @@ const Home = () => {
             <section
               key={item.key}
               className="icon_wrapper"
-              onClick={() => {
-                reduxDispatch(increment());
-                console.log('%c 88888 test redux ...', 'color: #ff0;', item);
+              onClick={async () => {
+                const loadWallet = await walletInstance.load(Web3.utils.sha3Raw('test'), 'myWallet');
+                // reduxDispatch(increment());
+                console.log('%c 88888 test redux ...', 'color: #ff0;', item, loadWallet, loadWallet.length);
               }}
             >
               <img src={item.icon} alt={item.name} className="icon_image" />

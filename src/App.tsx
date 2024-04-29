@@ -73,7 +73,11 @@ function App() {
           <Route
             path="/"
             element={
-              <Pages.Home />
+              <Pages.Home
+                web3Instance={web3Instance}
+                accounts={accounts}
+                walletInstance={walletInstance}
+              />
             }
           />
           <Route

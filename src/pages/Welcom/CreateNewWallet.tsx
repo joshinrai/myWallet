@@ -1,8 +1,9 @@
 import { memo, useReducer, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import {
+  Button,
   Dialog,
   TextField,
 } from '@mui/material';
@@ -10,6 +11,8 @@ import { purple } from '@mui/material/colors';
 
 import Web3 from 'web3';
 import throttle from 'lodash/throttle';
+
+import { setPassword } from '../../store/accountsSlice';
 
 import { ImportPrivateKeyWrapper } from './styles';
 
@@ -38,6 +41,7 @@ const initialState = {
 };
 const reducer = (state: any, payload: any) => ({ ...state, ...payload });
 
+// TODO: form改为非受控模式
 const CreateNewWallet = (props: any) => {
   const { outerDispatch, showDialog, walletInstance } = props;
 
@@ -50,6 +54,8 @@ const CreateNewWallet = (props: any) => {
   } = state;
 
   const [passwordRef, comfirmRef]: any = [useRef(null), useRef(null)];
+
+  const reduxDispatch = useDispatch();
 
   return (
     <Dialog
@@ -157,8 +163,10 @@ const CreateNewWallet = (props: any) => {
               }
               if (returnBool || [pswError, cfmError].some(Boolean)) return;
               const res: any = await walletInstance.create(1);
-              const saveBool = await walletInstance.save(`${pswValue}`, 'myWallet');
-              const loadWallet = await walletInstance.load(pswValue);
+              const saveBool = await walletInstance.save(confirmText, 'myWallet');
+              const loadWallet = await walletInstance.load(confirmText);
+              console.log('%c 8888888 confirmText is:', 'color: #ff0;', confirmText);
+              reduxDispatch(setPassword(confirmText as any));
               console.log('%c 9999999 确定 ...', 'color: #0f0;', res, saveBool, loadWallet, loadWallet.length);
               outerDispatch({
                 showAddDialog: false,
