@@ -1,12 +1,10 @@
 import { memo, useReducer } from 'react';
-
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { purple } from '@mui/material/colors';
-
-import Web3 from 'web3';
 
 import CreateNewWallet from './CreateNewWallet';
 import LoadWallet from './LoadWallet';
@@ -81,6 +79,8 @@ const Welcom = (props: any) => {
     showDialog,
   } = state;
 
+  const password = useSelector((reduxState: any) => reduxState.account.password);
+
   const navigate = useNavigate();
 
   return (
@@ -113,7 +113,7 @@ const Welcom = (props: any) => {
             marginTop: '20px',
           }}
           onClick={async () => {
-            const loadWallet = await walletInstance.load(Web3.utils.sha3Raw('test'), 'myWallet');
+            const loadWallet = await walletInstance.load(password, import.meta.env.VITE_PROJECT_WALLET_NAME);
             console.log('%c 8888888 测试加载钱包 ...', 'color: #ff0;', loadWallet, loadWallet.length);
           }}
         >

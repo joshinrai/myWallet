@@ -78,7 +78,7 @@ const AccountList = (props: any) => {
   const hideAccount = async () => {
     try {
       const removeRes: any = await walletInstance.remove(currentAccount.address);
-      const res: any = await walletInstance.save(password, 'myWallet');
+      const res: any = await walletInstance.save(password, import.meta.env.VITE_PROJECT_WALLET_NAME);
       if (removeRes && res) {
         dispatch({
           anchorEl: null,

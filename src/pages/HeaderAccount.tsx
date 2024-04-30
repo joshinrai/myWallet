@@ -58,7 +58,7 @@ const HeaderAccount = (props: any) => {
 
   const loadWalletAddress = async () => {
     if (password) {
-      const loadWallet = await walletInstance.load(password, 'myWallet');
+      const loadWallet = await walletInstance.load(password, import.meta.env.VITE_PROJECT_WALLET_NAME);
       const firstAccountAddress = loadWallet?.[0]?.address;
       reduxDispatch(changeCurrentAccount(firstAccountAddress));
       const walletLen = loadWallet.length;

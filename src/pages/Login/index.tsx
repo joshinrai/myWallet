@@ -86,7 +86,7 @@ const Login = () => {
             try {
               const inputValue = inputRef?.current?.value;
               const sha3Value = Web3.utils.sha3Raw(inputValue);
-              const loadWallet = await walletInstance.load(sha3Value, 'myWallet');
+              const loadWallet = await walletInstance.load(sha3Value, import.meta.env.VITE_PROJECT_WALLET_NAME);
               if (loadWallet.length) {
                 reduxDispatch(setPassword(sha3Value as any));
                 navigate('/');

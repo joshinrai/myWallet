@@ -98,6 +98,13 @@ const TransferWrapper = styled.section`
     & > section.gas_content {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      span.estimated_fee {
+        font-size: 14px;
+      }
+      div.market_content {
+        font-size: 12px;
+      }
     }
   }
 
@@ -110,8 +117,39 @@ const TransferWrapper = styled.section`
   }
 `;
 
+const TransferConfirmWrapper = styled.section`
+  & > h4.confirm_title {
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    width: max-content;
+    margin: 0;
+    border-radius: 4px;
+  }
+
+  & > div.amount_wrapper {
+    & > span.amount_label {
+      font-size: 12px;
+    }
+    & > span.amount_number {
+      font-size: 14px;
+    }
+  }
+
+  & > div.container_wrapper {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+    & > div.split_wrapper {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+`;
+
 export {
   HomeWrapper,
   DialogTitleWrapper,
   TransferWrapper,
+  TransferConfirmWrapper,
 };

@@ -163,8 +163,9 @@ const CreateNewWallet = (props: any) => {
               }
               if (returnBool || [pswError, cfmError].some(Boolean)) return;
               await walletInstance.create(1);
-              await walletInstance.save(confirmText, 'myWallet');
-              await walletInstance.load(confirmText, 'myWallet');
+              const walletName = import.meta.env.VITE_PROJECT_WALLET_NAME;
+              await walletInstance.save(confirmText, walletName);
+              // await walletInstance.load(confirmText, walletName);
               reduxDispatch(setPassword(confirmText as any));
               outerDispatch({
                 showAddDialog: false,

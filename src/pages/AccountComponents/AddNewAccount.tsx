@@ -90,7 +90,7 @@ const AddNewAccount = (props: any) => {
           onClick={async () => {
             try {
               await walletInstance.create(1);
-              await walletInstance.save(password, 'myWallet');
+              await walletInstance.save(password, import.meta.env.VITE_PROJECT_WALLET_NAME);
               dispatch({
                 open: true,
                 accountMessage: 'account创建成功!',
@@ -174,7 +174,6 @@ const AddNewAccount = (props: any) => {
                 const value = inputRef?.current?.value;
                 await judgePrivateKey(value);
                 await walletInstance.add(`0x${value}`);
-                // await walletInstance.save(password, 'myWallet');
                 dispatch({
                   showDialog: false,
                   open: true,

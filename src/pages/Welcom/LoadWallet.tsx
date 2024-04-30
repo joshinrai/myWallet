@@ -204,7 +204,7 @@ const LoadWallet = (props: any) => {
               }
               if (returnBool || [fieldError, pswError, cfmError].some(Boolean)) return;
               const res: any = await walletInstance.add(`0x${primaryKeyValue}`);
-              const saveBool = await walletInstance.save(`${pswValue}`, 'myWallet');
+              const saveBool = await walletInstance.save(`${pswValue}`, import.meta.env.VITE_PROJECT_WALLET_NAME);
               console.log('%c 9999999 确定 ...', 'color: #0f0;', res, saveBool);
               outerDispatch({
                 showDialog: false,
