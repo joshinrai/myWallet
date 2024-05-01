@@ -8,9 +8,10 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-import axios from 'axios';
 import Web3 from 'web3';
 import throttle from 'lodash/throttle';
+
+import { request } from '../../utils/myRequest';
 
 import {
   DialogTitleWrapper,
@@ -32,23 +33,6 @@ const stepMap = new Map([
   [0, '下一步'],
   [1, '确认'],
 ]);
-
-const request = async (method: string, chainId: any, params: any) => {
-  return await axios.post(
-    `https://sepolia.infura.io/v3/${import.meta.env.VITE_PROJECT_INFURA_API_KEY}`,
-    {
-      jsonrpc: "2.0",
-      method, // : "eth_estimateGas",
-      params,
-      id: chainId,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }
-  );
-};
 
 const initialState = {
   addressError: true,
