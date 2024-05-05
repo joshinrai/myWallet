@@ -1,5 +1,6 @@
 import { memo, useReducer, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
 import {
@@ -56,6 +57,7 @@ const CreateNewWallet = (props: any) => {
   const [passwordRef, comfirmRef]: any = [useRef(null), useRef(null)];
 
   const reduxDispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <Dialog
@@ -170,6 +172,7 @@ const CreateNewWallet = (props: any) => {
               outerDispatch({
                 showAddDialog: false,
               });
+              navigate('/');
             } catch(e: any) {
               console.log('error is:', 'color: #f00;', e);
               dispatch({

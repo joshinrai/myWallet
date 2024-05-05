@@ -1,6 +1,6 @@
 import { memo, useReducer } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+// import { useSelector } from 'react-redux';
+// import { useNavigate } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -79,9 +79,9 @@ const Welcom = (props: any) => {
     showDialog,
   } = state;
 
-  const password = useSelector((reduxState: any) => reduxState.account.password);
+  // const password = useSelector((reduxState: any) => reduxState.account.password);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <WelcomWrapper>
@@ -107,7 +107,7 @@ const Welcom = (props: any) => {
           导入现有钱包
         </BootstrapButton>
 
-        <Button
+        {/* <Button
           variant="contained"
           sx={{
             marginTop: '20px',
@@ -130,7 +130,7 @@ const Welcom = (props: any) => {
           }}
         >
           跳转首页
-        </Button>
+        </Button> */}
       </div>
 
       <CreateNewWallet

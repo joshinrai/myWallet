@@ -1,4 +1,5 @@
 import { memo, useReducer, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -53,6 +54,8 @@ const LoadWallet = (props: any) => {
     cfmError,
     cfmhelperText,
   } = state;
+
+  const navigate = useNavigate();
 
   const [inputRef, passwordRef, comfirmRef]: any = [useRef(null), useRef(null), useRef(null)];
 
@@ -204,11 +207,12 @@ const LoadWallet = (props: any) => {
               }
               if (returnBool || [fieldError, pswError, cfmError].some(Boolean)) return;
               const res: any = await walletInstance.add(`0x${primaryKeyValue}`);
-              const saveBool = await walletInstance.save(`${pswValue}`, import.meta.env.VITE_PROJECT_WALLET_NAME);
+              const saveBool = await walletInstance.save(Web3.utils.sha3Raw(pswValue), import.meta.env.VITE_PROJECT_WALLET_NAME);
               console.log('%c 9999999 确定 ...', 'color: #0f0;', res, saveBool);
               outerDispatch({
                 showDialog: false,
               });
+              navigate('/');
             } catch(e: any) {
               console.log('error is:', 'color: #f00;', e);
               dispatch({

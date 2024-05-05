@@ -161,6 +161,7 @@ const TransactionHistoryWrapper = styled.ul`
   list-style: none;
   li {
     margin-top: 20px;
+    cursor: pointer;
     & > div.split_wrapper {
       display: flex;
       justify-content: space-between;
@@ -174,10 +175,26 @@ const TransactionHistoryWrapper = styled.ul`
   }
 `;
 
+const TransactionDetailWrapper = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  & > li {
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    overflow: auto;
+    & > span.key {
+      margin-right: 10px;
+    }
+  }
+`;
+
 export {
   HomeWrapper,
   DialogTitleWrapper,
   TransferWrapper,
   TransferConfirmWrapper,
   TransactionHistoryWrapper,
+  TransactionDetailWrapper,
 };

@@ -12,6 +12,7 @@ import Web3 from 'web3';
 import dayjs from 'dayjs';
 
 import Transfer from './transfer';
+import TransferDetail from './transferDetail';
 import { HomeWrapper, TransactionHistoryWrapper } from './styles';
 
 import {
@@ -72,6 +73,8 @@ const initialState = {
   currentChainId: '',
   usdBalance: '',
   currentTransactions: [],
+  showDetailDialog: false,
+  transDetailItem: null,
 };
 const reducer = (state: any, payload: any) => ({ ...state, ...payload });
 
@@ -85,6 +88,8 @@ const Home = (props: any) => {
     currentChainId,
     usdBalance,
     currentTransactions,
+    showDetailDialog,
+    transDetailItem,
   } = state;
 
   const currentAccount = useSelector((reduxState: any) => reduxState.account.currentAccount);
@@ -213,7 +218,15 @@ const Home = (props: any) => {
           <TransactionHistoryWrapper>
             {
               currentTransactions.map((item: any) => (
-                <li key={item.timeStamp}>
+                <li
+                  key={item.timeStamp}
+                  onClick={() => {
+                    dispatch({
+                      showDetailDialog: true,
+                      transDetailItem: item,
+                    });
+                  }}
+                >
                   <div className="split_wrapper">
                     <span className="recieve_status">{
                       item?.contractAddress ? 'ERC20代币' : (
@@ -246,6 +259,11 @@ const Home = (props: any) => {
         ethBalance={ethBalance}
         currentChainId={currentChainId}
         currentAccount={currentAccount}
+      />
+      <TransferDetail
+        outerDispatch={dispatch}
+        showDetailDialog={showDetailDialog}
+        transDetailItem={transDetailItem}
       />
     </HomeWrapper>
   );
