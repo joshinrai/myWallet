@@ -9,15 +9,17 @@ import {
 } from '@mui/material';
 
 import Web3 from 'web3';
+import dayjs from 'dayjs';
 
 import Transfer from './transfer';
-import { HomeWrapper } from './styles';
+import { HomeWrapper, TransactionHistoryWrapper } from './styles';
 
 import {
   sepoliaEtherscanInstance,
   etherscanInstance,
-  request,
 } from '../../utils/myRequest';
+
+const etherFromWei = Web3.utils.fromWei;
 
 const actionList = [
   {
@@ -41,6 +43,8 @@ const a11yProps = (index: number) => {
     }
   };
 }
+
+let switchBool: boolean = false;
 
 const TabPanel = (props: any) => {
   const { children, value, index, ...other } = props;
@@ -67,6 +71,7 @@ const initialState = {
   showDialog: false,
   currentChainId: '',
   usdBalance: '',
+  currentTransactions: [],
 };
 const reducer = (state: any, payload: any) => ({ ...state, ...payload });
 
@@ -74,7 +79,13 @@ const Home = (props: any) => {
   const { web3Instance } = props;
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { ethBalance, showDialog, currentChainId, usdBalance } = state;
+  const {
+    ethBalance,
+    showDialog,
+    currentChainId,
+    usdBalance,
+    currentTransactions,
+  } = state;
 
   const currentAccount = useSelector((reduxState: any) => reduxState.account.currentAccount);
 
@@ -82,53 +93,59 @@ const Home = (props: any) => {
 
   const handleChange = (_event: any, newValue: any) => setValue(newValue);
 
+  const getTransactions = async (accountAddress: any) => {
+    const transactionRes = await sepoliaEtherscanInstance.get(`/api?module=account&action=txlist&contractaddress=0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43&address=${accountAddress}&startblock=0&endblock=99999999&page=1&offset=1000&sort=desc&apikey=${import.meta.env.VITE_PROJECT_ETHERSCAN_API_KEY}`);
+    const transactions = (transactionRes?.data?.result ?? []).map((item: any) => {
+      const timeStamp = +item.timeStamp * 1000;
+      const transDate = dayjs(timeStamp).format('YYYY-MM-DD');
+      const transTime = dayjs(timeStamp).format('YYYY-MM-DD HH:mm:ss');
+      return {
+        ...item,
+        transDate,
+        transTime,
+        ethNum: (+etherFromWei(item.value, 'ether'))?.toFixed(4),
+      };
+    });
+    return transactions;
+  };
+
   const getAccount = async () => {
     const [
       balance,
       chainId,
-      transCount,
       priceRes
     ] = await Promise.all([
       web3Instance.eth.getBalance(currentAccount),
       web3Instance.eth.getChainId(),
-      web3Instance.eth.getTransactionCount(currentAccount),
       etherscanInstance.get(`/api?module=stats&action=ethprice&apikey=${import.meta.env.VITE_PROJECT_ETHERSCAN_API_KEY}`),
     ]);
     const chainIdNumber = web3Instance.utils.toNumber(chainId);
 
-    const res: any = await request('eth_blockNumber', chainIdNumber, []);
-    const latestBlock = res?.data?.result;
-    console.log('%c 888888888 latestBlock is:', 'color: #f00;', latestBlock, priceRes);
-    const transactions = await sepoliaEtherscanInstance.get(`/api?module=account&action=txlist&contractaddress=0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43&address=0x2337eE72E227259C6432A6Ef03F294A6738dbF7B&startblock=0&endblock=99999999&page=1&offset=1000&sort=asc&apikey=${import.meta.env.VITE_PROJECT_ETHERSCAN_API_KEY}`);
-    console.log('%c 999999999 transactions is:', 'color: #0f0;', transactions);
-    // 获取最后一条交易记录
-    const latestTransaction = await request(
-      'eth_getTransactionByBlockNumberAndIndex',
-      chainIdNumber,
-      [latestBlock, '0x0']
-    );
-    console.log('%c 777777777 res is:', 'color: #ff0;', res, latestBlock, latestTransaction);
-    for (let i = 0; i < transCount; i += 1) {
-      // const bigintNumber = web3Instance.utils.toBigInt(i);
-      // const res: any = await request('eth_getTransactionByBlockNumberAndIndex', chainIdNumber, [`${bigintNumber}`, 0]);
-      // const res: any = await request('eth_blockNumber', chainIdNumber, []);
-      // console.log('%c 777777777 res is:', 'color: #ff0;', res);
-    }
-    console.log(
-      '%c 666666666666 transCount is:',
-      'color: #0f0;',
-      transCount,
-      web3Instance.eth.getTransactionByBlockNumberAndIndex,
-    );
-    const eBalance: string = Web3.utils.fromWei(balance, 'ether');
+    const transactions = await getTransactions(currentAccount);
+    const eBalance: string = etherFromWei(balance, 'ether');
     const usdBa = +eBalance * priceRes.data.result.ethusd;
 
     dispatch({
       ethBalance: `${(+eBalance).toFixed(4)}`,
       currentChainId: chainIdNumber,
       usdBalance: usdBa.toFixed(2),
+      currentTransactions: transactions ?? [],
     });
   };
+
+  const refreshTransList = async () => {
+    const transactions = await getTransactions(currentAccount);
+    dispatch({
+      currentTransactions: transactions ?? [],
+    });
+  };
+
+  useEffect(() => {
+    if (switchBool && !showDialog && currentAccount) {
+      refreshTransList();
+    }
+    if (showDialog) switchBool = true;
+  }, [showDialog]);
 
   useEffect(() => {
     if (currentAccount) getAccount();
@@ -180,11 +197,11 @@ const Home = (props: any) => {
             centered
           >
             <Tab
-              label="代币"
+              label="活动"
               {...a11yProps(0)}
             />
             <Tab
-              label="活动"
+              label="NFT"
               {...a11yProps(2)}
             />
           </Tabs>
@@ -193,12 +210,32 @@ const Home = (props: any) => {
           value={value}
           index={0}
         >
-          代币
+          <TransactionHistoryWrapper>
+            {
+              currentTransactions.map((item: any) => (
+                <li key={item.timeStamp}>
+                  <div className="split_wrapper">
+                    <span className="recieve_status">{
+                      item?.contractAddress ? 'ERC20代币' : (
+                        `${currentAccount}`.toLowerCase() === item.from.toLowerCase() ? '发送' : '收款'
+                      )
+                    }</span>
+                    <span>{item.ethNum}Sepolia ETH</span>
+                  </div>
+
+                  <div className="split_wrapper">
+                    <span className="trans_status">{item.txreceipt_status === '1' ? '已确认' : '收款中'}</span>
+                    <span>{item.transTime}</span>
+                  </div>
+                </li>
+              ))
+            }
+          </TransactionHistoryWrapper>
         </TabPanel>
         <TabPanel
           value={value} index={2}
         >
-          活动
+          NFT
         </TabPanel>
       </Box>
 

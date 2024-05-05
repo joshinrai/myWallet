@@ -67,7 +67,6 @@ const MoreDetail = () => {
                   button
                   onClick={() => {
                     dispatch({ showDialog: false });
-                    console.log('%c 777777 action is:', '#0f0;', action);
                     if (action.key === 'lock') {
                       reduxDispatch(setPassword('' as any));
                       navigate('/login');

@@ -124,6 +124,7 @@ const TransferConfirmWrapper = styled.section`
     width: max-content;
     margin: 0;
     border-radius: 4px;
+    margin-top: 10px;
   }
 
   & > div.amount_wrapper {
@@ -140,9 +141,35 @@ const TransferConfirmWrapper = styled.section`
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-top: 10px;
+    font-size: 16px;
     & > div.split_wrapper {
       display: flex;
       justify-content: space-between;
+      & > span.total_max_label {
+        font-size: 14px;
+      }
+      & > span.total_max_number {
+        font-size: 14px;
+      }
+    }
+  }
+`;
+
+const TransactionHistoryWrapper = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    margin-top: 20px;
+    & > div.split_wrapper {
+      display: flex;
+      justify-content: space-between;
+      & > span.recieve_status {
+        font-weight: 600;
+      }
+      & > span.trans_status {
+
+      }
     }
   }
 `;
@@ -152,4 +179,5 @@ export {
   DialogTitleWrapper,
   TransferWrapper,
   TransferConfirmWrapper,
+  TransactionHistoryWrapper,
 };

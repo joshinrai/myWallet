@@ -1,17 +1,22 @@
-import { memo, useReducer, useRef, useEffect } from 'react';
+import { memo, useReducer, useRef, useEffect, forwardRef } from 'react';
 
 import {
   Dialog,
   DialogTitle,
   TextField,
   Button,
+  Snackbar,
+  Alert as MuiAlert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import Web3 from 'web3';
 import throttle from 'lodash/throttle';
 
-import { request } from '../../utils/myRequest';
+import {
+  request,
+} from '../../utils/myRequest';
 
 import {
   DialogTitleWrapper,
@@ -34,6 +39,10 @@ const stepMap = new Map([
   [1, '确认'],
 ]);
 
+const Alert = forwardRef(function Alert(props: any, ref: any) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const initialState = {
   addressError: true,
   amountError: false,
@@ -42,10 +51,14 @@ const initialState = {
   maxPriorityFee: '',
   toAddress: '',
   sendValue: '',
+  loading: false,
+  open: false,
+  accountMessage: '',
+  status: '',
 };
 const reducer = (state: any, payload: any) => ({ ...state, ...payload });
 
-let intervalTime: any = void 0;
+let [timeout, intervalTime]: any = [void 0, void 0];
 
 const Transfer = (props: any) => {
   const {
@@ -66,42 +79,40 @@ const Transfer = (props: any) => {
     maxPriorityFee,
     toAddress,
     sendValue,
+    loading,
+    open,
+    accountMessage,
+    status,
   } = state;
 
-  const publicKeyRef: any = useRef(null);
+  const [publicKeyRef, amountRef]: any = [useRef(null), useRef(null)];
 
   const getEstimateGas = async () => {
     try {
-      console.log('%c 77777777 toAddress is:', 'color: #0f0;', toAddress);
       if (!toAddress && intervalTime) {
         clearInterval(intervalTime);
         intervalTime = void 0;
       }
+      const [toNumber, fromWei] = [web3Instance.utils.toNumber, Web3.utils.fromWei];
+      // etherscan 获取 gas 费
+      /* const gasPriceRes = await sepoliaEtherscanInstance.get(`/api?module=proxy&action=eth_gasPrice&apikey=${import.meta.env.VITE_PROJECT_ETHERSCAN_API_KEY}`);
+      const estimateGasRes = await sepoliaEtherscanInstance.get(`/api?module=proxy&action=eth_estimateGas&data=0x60fe47b10000000000000000000000000000000000000000000000000000000000000004&to=${toAddress}&value=0x0&gasPrice=${gasPriceRes?.data?.result}&gas=0x186A0&apikey=${import.meta.env.VITE_PROJECT_ETHERSCAN_API_KEY}`);
+      console.log('%c 9999999 gasPrice is:', 'color: #f00;', gasPriceRes, fromWei(gasPriceRes?.data?.result, 'ether'), estimateGasRes);
+      console.log('%c 8888888 estimateGasRes is:', 'color: #ff0;', fromWei(estimateGasRes?.data?.result, 'ether')); */
+
       const params = [{
         from: currentAccount,
-        to: toAddress, // '0x2337eE72E227259C6432A6Ef03F294A6738dbF7B',
+        to: /^0x.*/.test(toAddress) ? toAddress : `0x${toAddress}`,
       }];
       const [estimateGas, maxPriorityFeePerGas]: any = await Promise.all([
         request('eth_estimateGas', currentChainId, params),
         request('eth_maxPriorityFeePerGas', currentChainId, []),
       ]);
 
-      const [toNumber, fromWei] = [web3Instance.utils.toNumber, Web3.utils.fromWei];
-      console.log('%c 6666666666 toNumber, fromWei is:', 'color: #ff0;', estimateGas?.data?.result, maxPriorityFeePerGas?.data?.result);
       const [estimateNumber, maxPriorityNumber] = [toNumber(estimateGas?.data?.result), toNumber(maxPriorityFeePerGas?.data?.result)];
 
       const [estimate, maxPriority]: any = [fromWei(estimateNumber, 'ether'), fromWei(maxPriorityNumber, 'ether')];
 
-      console.log(
-        '%c 666666666 res is:',
-        'color: #f00;',
-        estimateGas,
-        estimateNumber,
-        maxPriorityFeePerGas,
-        maxPriorityNumber,
-        estimate,
-        maxPriority,
-      );
       dispatch({
         estimateFee: estimate,
         maxPriorityFee: maxPriority,
@@ -130,10 +141,18 @@ const Transfer = (props: any) => {
         maxPriorityFee: '',
         toAddress: '',
         sendValue: '',
+        loading: false,
+        open: false,
+        accountMessage: '',
+        status: '',
       });
       if (intervalTime) {
         clearInterval(intervalTime);
         intervalTime = void 0;
+      }
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = void 0;
       }
     }
   }, [showDialog]);
@@ -159,6 +178,15 @@ const Transfer = (props: any) => {
             <span>数额：</span>
             <div
               className="max_button"
+              onClick={() => {
+                const amountNumber: any = document.querySelector('#amount-number');
+                const maxBalance = ethBalance - maxPriorityFee;
+                amountNumber.value = maxBalance;
+                dispatch({
+                  amountError: false,
+                  sendValue: maxBalance,
+                });
+              }}
             >
               最大
             </div>
@@ -167,6 +195,7 @@ const Transfer = (props: any) => {
           <section className="right_content">
             <div className="amount_wrapper">
               <TextField
+                ref={amountRef}
                 id="amount-number"
                 label="数额"
                 type="number"
@@ -217,7 +246,7 @@ const Transfer = (props: any) => {
         <h4 className="confirm_title">正在发送SEPOLIAETH</h4>
         <div className="amount_wrapper">
           <span className="amount_label">s</span>
-          <span className="amount_number">0.1</span>
+          <span className="amount_number">{sendValue}</span>
         </div>
 
         <div className="container_wrapper">
@@ -235,12 +264,12 @@ const Transfer = (props: any) => {
         <div className="container_wrapper">
           <div className="split_wrapper">
             <span className="total_label">总计</span>
-            <span className="total_number">0.100113SepoliaETH</span>
+            <span className="total_number">{ +sendValue + +estimateFee } Sepolia ETH</span>
           </div>
 
           <div className="split_wrapper">
-            <span className="total_label">金额+燃料费</span>
-            <span className="total_number">最大金额：0.100113 SepoliaEth</span>
+            <span className="total_max_label">金额+燃料费</span>
+            <span className="total_max_number">最大金额：{ +sendValue + +maxPriorityFee } Sepolia Eth</span>
           </div>
         </div>
       </TransferConfirmWrapper>
@@ -274,43 +303,46 @@ const Transfer = (props: any) => {
           />
         </DialogTitleWrapper>
 
-        <TextField
-          inputRef={publicKeyRef}
-          id="address_field"
-          label="公钥"
-          variant="filled"
-          error={addressError}
-          helperText={addressError ? '接收方地址无效' : ''}
-          onChange={throttle((e: any) => {
-            const address = e.target.value;
-            const isAddress = Web3.utils.isAddress(address);
-            dispatch({
-              addressError: !isAddress,
-              toAddress: address,
-            });
-            console.log('%c 9999999 公钥 e is:', 'color: #0f0;', e, address, isAddress);
-          }, 200)}
-          sx={{
-            width: '550px',
-            background: '#fffb8f',
-            borderRadius: '5px',
-          }}
-        />
+        {
+          step === 0 ? (
+            <TextField
+              inputRef={publicKeyRef}
+              id="address_field"
+              label="公钥"
+              variant="filled"
+              error={addressError}
+              helperText={addressError ? '接收方地址无效' : ''}
+              onChange={throttle((e: any) => {
+                const address = e.target.value;
+                const isAddress = Web3.utils.isAddress(address);
+                dispatch({
+                  addressError: !isAddress,
+                  toAddress: address,
+                });
+              }, 200)}
+              sx={{
+                width: '550px',
+                background: '#fffb8f',
+                borderRadius: '5px',
+              }}
+            />
+          ) : null
+        }
 
         <TransferWrapper>
           {
-            domMap.get(step)
+            toAddress ? domMap.get(step) : null
           }
           <div className="footer_button_wrapper">
             <Button
               variant="outlined"
               size="medium"
               onClick={async () => {
-                /* outerDispatch({
-                  showDialog: false,
-                }); */
-                const res: any = await web3Instance.eth.getTransactionCount(currentAccount);
-                console.log('%c 88888888888 res is:', 'color: #ff0;', res);
+                if (step === 0) {
+                  outerDispatch({
+                    showDialog: false,
+                  });
+                }
               }}
             >
               {
@@ -318,9 +350,10 @@ const Transfer = (props: any) => {
               }
             </Button>
 
-            <Button
+            <LoadingButton
               variant="contained"
               size="medium"
+              loading={loading}
               onClick={async () => {
                 if (step === 0) {
                   dispatch({
@@ -329,24 +362,62 @@ const Transfer = (props: any) => {
                 } else {
                   const transaction = {
                     from: currentAccount,
-                    to: toAddress,
+                    to: /^0x.*/.test(toAddress) ? toAddress : `0x${toAddress}`,
                     value: Web3.utils.toWei(sendValue, 'ether'),
                     gas: '21000'
                   };
-                  console.log('%c 77777777 transaction is:', 'color: #f0f;', transaction);
+                  dispatch({ loading: true });
                   const res: any = await web3Instance.eth.sendTransaction(transaction);
-                  console.log('%c 2222222 res is:', 'color: #0ff;', res);
+                  if (parseInt(res?.status) === 1) {
+                    dispatch({
+                      loading: false,
+                      open: true,
+                      accountMessage: '转账成功!',
+                      status: 'success',
+                    });
+                    timeout = setTimeout(() => {
+                      outerDispatch({
+                        showDialog: false,
+                      });
+                    }, 2000);
+                  } else {
+                    dispatch({
+                      loading: false,
+                      open: true,
+                      accountMessage: '转账失败!',
+                      status: 'error',
+                    });
+                  }
                 }
-                console.log('%c 999999999 下一步。。。', 'color: #0f0;', step);
               }}
             >
               {
                 stepMap.get(step)
               }
-            </Button>
+            </LoadingButton>
           </div>
         </TransferWrapper>
       </DialogTitle>
+
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={() => {
+          dispatch({
+            open: false,
+            accountMessage: '',
+            status: '',
+          });
+        }}
+      >
+        <Alert
+          severity={status}
+          sx={{ width: '100%' }}
+        >
+          {accountMessage}
+        </Alert>
+      </Snackbar>
+
     </Dialog>
   );
 };

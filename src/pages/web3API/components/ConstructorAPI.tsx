@@ -19,7 +19,6 @@ const ConstructorAPI = () => {
     console.log('err 1 is:', 'color: #f00;', e, '请安装钱包');
   }
 
-  console.log(11111);
   return (
     <Box
       sx={{ width: '100%', height: 'auto', bgcolor: 'background.dark' }}
