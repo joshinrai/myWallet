@@ -13,7 +13,6 @@ import {
 
 const TransferDetail = (props: any) => {
   const { outerDispatch, showDetailDialog, transDetailItem } = props;
-  console.log('%c 9999999999 transDetailItem is:', 'color: #ff0;', transDetailItem);
 
   return (
     <Dialog

@@ -7,7 +7,7 @@ const ImportPrivateKeyWrapper = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  & > span.account_address {
+  & > span.account_address, span.show_pri_key {
     display: inline-block;
     width: 300px;
     white-space: pre-wrap;

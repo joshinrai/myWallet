@@ -14,13 +14,15 @@ import {
   Dialog,
   Snackbar,
   Alert as MuiAlert,
+  TextField,
 } from '@mui/material';
 
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
-
 import { blue } from '@mui/material/colors';
 
+import Web3 from 'web3';
+import throttle from 'lodash/throttle';
 import QRCode from 'qrcode';
 
 import { changeCurrentAccount, deleteAccount } from '../../store/accountsSlice';
@@ -28,7 +30,7 @@ import { changeCurrentAccount, deleteAccount } from '../../store/accountsSlice';
 import { SelectAccountWrapper } from '../styles';
 import { MoreIcon, ImportPrivateKeyWrapper } from './styles';
 
-let timeout: any = void 0;
+let [timeout, pkTimeout]: any = [void 0, void 0];
 
 const Alert = React.forwardRef(function Alert(props: any, ref: any) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -42,6 +44,7 @@ const initialState = {
   SnackbarOpen: false,
   accountMessage: '',
   status: '',
+  showPK: false,
 };
 const reducer = (state: any, payload: any) => ({ ...state, ...payload });
 
@@ -49,7 +52,16 @@ const AccountList = (props: any) => {
   const { Accounts, outerDispatch, walletInstance } = props;
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { anchorEl, open, currentAccount, showDialog, SnackbarOpen, accountMessage, status } = state;
+  const {
+    anchorEl,
+    open,
+    currentAccount,
+    showDialog,
+    SnackbarOpen,
+    accountMessage,
+    status,
+    showPK,
+  } = state;
 
   const reduxDispatch = useDispatch();
   const password = useSelector((reduxState: any) => reduxState.account.password);
@@ -107,6 +119,10 @@ const AccountList = (props: any) => {
         clearTimeout(timeout);
         timeout = void 0;
       }
+      if (pkTimeout) {
+        clearTimeout(pkTimeout);
+        pkTimeout = void 0;
+      }
     };
   }, []);
 
@@ -126,7 +142,6 @@ const AccountList = (props: any) => {
               button
               onClick={() => {
                 reduxDispatch(changeCurrentAccount(account?.address));
-                console.log('%c 9999999 account is:', 'color: #0f0;', account);
                 outerDispatch({
                   showDialog: false,
                 });
@@ -242,6 +257,39 @@ const AccountList = (props: any) => {
           <span className="account_address">
             {currentAccount?.address}
           </span>
+          <TextField
+            id="show_private_key_field"
+            label="显示私钥"
+            variant="filled"
+            type="password"
+            onChange={throttle((e: any) => {
+              const value = e?.target?.value;
+              const confirmPassword = Web3.utils.sha3Raw(value);
+              const confirmBool = confirmPassword === password;
+              dispatch({
+                showPK: confirmBool,
+              });
+              if (confirmBool) {
+                pkTimeout = setTimeout(() => {
+                  dispatch({
+                    showPK: false,
+                  });
+                }, 3000);
+              }
+            }, 200)}
+            sx={{
+              width: '300px',
+              background: '#fffb8f',
+              borderRadius: '5px',
+            }}
+          />
+          {
+            showPK ? (
+              <span className="show_pri_key">
+                {currentAccount.privateKey}
+              </span>
+            ) : null
+          }
         </ImportPrivateKeyWrapper>
       </Dialog>
 
