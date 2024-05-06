@@ -117,7 +117,7 @@ ${n.byteLength}`)),i=Mt(r,n);return dn(i)},_k=(e,t)=>{const n=ma(t),r=ev(e),i=Yr
     body {
       margin: 0;
       width: 100vw;
-      min-width: 500px;
+      min-width: 700px;
       min-height: 600px;
       height: 100vh;
     }
